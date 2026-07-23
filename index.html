@@ -8,157 +8,264 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-78VZWJ5B1W"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-78VZWJ5B1W');</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7039091592734005" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh}nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 24px;display:flex;align-items:center;gap:16px}nav a{color:#94a3b8;text-decoration:none;font-size:14px}nav a:hover{color:#f1f5f9}nav .brand{color:#38bdf8;font-weight:700;font-size:18px}.ad-banner{background:#1e293b;border-bottom:1px solid #334155;padding:8px;text-align:center}</style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh}
+nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 24px;display:flex;align-items:center;gap:16px}
+nav a{color:#94a3b8;text-decoration:none;font-size:14px}
+nav a:hover{color:#f1f5f9}
+nav .brand{color:#38bdf8;font-weight:700;font-size:18px}
+.ad-banner{background:#1e293b;border-bottom:1px solid #334155;padding:8px;text-align:center}
+#app{max-width:540px;margin:40px auto;padding:0 20px;text-align:center}
+h1{font-size:28px;font-weight:700;margin-bottom:8px}
+.subtitle{color:#94a3b8;margin-bottom:24px}
+.presets{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.preset-btn{border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s,color 0.15s}
+.card{background:#1e293b;border-radius:20px;padding:32px 24px;border:1px solid #334155;margin-bottom:20px}
+#wheel-wrap{position:relative;display:inline-block;margin-bottom:24px}
+canvas{border-radius:50%;display:block;cursor:pointer}
+.pointer{position:absolute;top:50%;right:-18px;transform:translateY(-50%);width:0;height:0;border-top:16px solid transparent;border-bottom:16px solid transparent;border-right:34px solid #f1f5f9}
+#result-box{display:none;border-radius:14px;padding:16px 32px;margin:0 auto 20px;display:inline-block}
+#spin-btn{border:none;border-radius:12px;padding:14px 52px;font-size:18px;font-weight:700;cursor:pointer;transition:background 0.2s,color 0.2s}
+.history-card{background:#1e293b;border-radius:16px;padding:16px;border:1px solid #334155;text-align:left}
+.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:15px;font-weight:600}
+.history-stats{font-size:13px;color:#64748b}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border-radius:8px;padding:5px 14px;font-size:14px;font-weight:700}
+</style>
 </head>
 <body>
-<nav><span class="brand">⚡ Tabutility</span><a href="https://tabutility.com">← All Tools</a></nav>
-<div class="ad-banner"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7039091592734005" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
-<div id="root"></div>
-<script type="text/babel">
-//<![CDATA[
-const { useState, useRef, useEffect } = React;
+<nav>
+  <span class="brand">⚡ Tabutility</span>
+  <a href="https://tabutility.com">← All Tools</a>
+</nav>
+<div class="ad-banner">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7039091592734005" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
 
-const PRESETS = [
-  { label: 'Yes / No', options: [{text:'YES',color:'#22c55e'},{text:'NO',color:'#ef4444'}] },
-  { label: 'Yes / No / Maybe', options: [{text:'YES',color:'#22c55e'},{text:'NO',color:'#ef4444'},{text:'MAYBE',color:'#f59e0b'}] },
-  { label: '50/50 (weighted)', options: [{text:'YES',color:'#22c55e'},{text:'YES',color:'#22c55e'},{text:'NO',color:'#ef4444'},{text:'NO',color:'#ef4444'}] },
+<div id="app">
+  <h1>Yes or No Wheel</h1>
+  <p class="subtitle">Can't decide? Let the wheel choose for you.</p>
+
+  <div class="presets">
+    <button class="preset-btn" data-idx="0">Yes / No</button>
+    <button class="preset-btn" data-idx="1">Yes / No / Maybe</button>
+    <button class="preset-btn" data-idx="2">50/50 Weighted</button>
+  </div>
+
+  <div class="card">
+    <div id="wheel-wrap">
+      <canvas id="wheel" width="300" height="300"></canvas>
+      <div class="pointer"></div>
+    </div>
+
+    <div id="result-box" style="display:none"></div>
+
+    <div>
+      <button id="spin-btn">SPIN</button>
+    </div>
+  </div>
+
+  <div class="history-card" id="history-card" style="display:none">
+    <div class="history-header">
+      History
+      <span class="history-stats" id="history-stats"></span>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<script>
+var PRESETS = [
+  [
+    {text:'YES', color:'#22c55e'},
+    {text:'NO',  color:'#ef4444'}
+  ],
+  [
+    {text:'YES',   color:'#22c55e'},
+    {text:'NO',    color:'#ef4444'},
+    {text:'MAYBE', color:'#f59e0b'}
+  ],
+  [
+    {text:'YES', color:'#22c55e'},
+    {text:'YES', color:'#16a34a'},
+    {text:'NO',  color:'#ef4444'},
+    {text:'NO',  color:'#dc2626'}
+  ]
 ];
 
-function drawWheel(canvas, options, rotation) {
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width; const H = canvas.height;
-  const cx = W/2; const cy = H/2; const r = Math.min(cx,cy) - 8;
-  ctx.clearRect(0,0,W,H);
-  const n = options.length;
-  const slice = (2 * Math.PI) / n;
-  options.forEach((opt, i) => {
-    const start = rotation + i * slice;
-    const end = start + slice;
-    ctx.beginPath(); ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,start,end);
+var options   = PRESETS[0];
+var rotation  = 0;
+var spinning  = false;
+var history   = [];
+var animId    = null;
+
+var canvas   = document.getElementById('wheel');
+var ctx      = canvas.getContext('2d');
+var spinBtn  = document.getElementById('spin-btn');
+var resultBox = document.getElementById('result-box');
+var histCard  = document.getElementById('history-card');
+var statsEl   = document.getElementById('history-stats');
+var chipsEl   = document.getElementById('chips');
+
+// --- Preset buttons ---
+document.querySelectorAll('.preset-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var idx = parseInt(btn.getAttribute('data-idx'));
+    options = PRESETS[idx];
+    rotation = 0;
+    resultBox.style.display = 'none';
+    updatePresetStyle(idx);
+    drawWheel();
+  });
+});
+
+function updatePresetStyle(activeIdx) {
+  document.querySelectorAll('.preset-btn').forEach(function(b, i) {
+    if (i === activeIdx) {
+      b.style.background = '#38bdf8';
+      b.style.color = '#0f172a';
+      b.style.border = '1px solid #38bdf8';
+    } else {
+      b.style.background = '#1e293b';
+      b.style.color = '#94a3b8';
+      b.style.border = '1px solid #334155';
+    }
+  });
+}
+updatePresetStyle(0);
+
+// --- Draw ---
+function drawWheel() {
+  var W = canvas.width, H = canvas.height;
+  var cx = W / 2, cy = H / 2, r = Math.min(cx, cy) - 6;
+  ctx.clearRect(0, 0, W, H);
+  var n = options.length;
+  var slice = (2 * Math.PI) / n;
+
+  for (var i = 0; i < n; i++) {
+    var start = rotation + i * slice;
+    var end = start + slice;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
     ctx.closePath();
-    ctx.fillStyle = opt.color; ctx.fill();
-    ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = options[i].color;
+    ctx.fill();
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
     ctx.save();
-    ctx.translate(cx,cy);
-    ctx.rotate(start + slice/2);
+    ctx.translate(cx, cy);
+    ctx.rotate(start + slice / 2);
     ctx.textAlign = 'right';
     ctx.fillStyle = '#fff';
-    ctx.font = `bold ${n <= 4 ? 28 : 20}px sans-serif`;
-    ctx.fillText(opt.text, r - 16, 9);
+    ctx.font = 'bold ' + (n <= 4 ? 30 : 20) + 'px sans-serif';
+    ctx.fillText(options[i].text, r - 14, 10);
     ctx.restore();
+  }
+
+  // Centre dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 16, 0, 2 * Math.PI);
+  ctx.fillStyle = '#1e293b';
+  ctx.fill();
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+drawWheel();
+
+// --- Spin ---
+function doSpin() {
+  if (spinning) return;
+  spinning = true;
+  resultBox.style.display = 'none';
+  spinBtn.textContent = 'Spinning…';
+  spinBtn.style.background = '#334155';
+  spinBtn.style.color = '#64748b';
+  spinBtn.style.cursor = 'not-allowed';
+
+  var extra = 6 + Math.random() * 6;
+  var extraAngle = Math.random() * 2 * Math.PI;
+  var totalAngle = extra * 2 * Math.PI + extraAngle;
+  var duration = 2800 + Math.random() * 800;
+  var startTime = performance.now();
+  var startRot = rotation;
+
+  function animate(now) {
+    var elapsed = now - startTime;
+    var progress = Math.min(elapsed / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 4);
+    rotation = startRot + totalAngle * ease;
+    drawWheel();
+
+    if (progress < 1) {
+      animId = requestAnimationFrame(animate);
+    } else {
+      var n = options.length;
+      var slice = (2 * Math.PI) / n;
+      var norm = ((-(rotation % (2 * Math.PI))) + 2 * Math.PI) % (2 * Math.PI);
+      var idx = Math.floor(norm / slice) % n;
+      var winner = options[idx];
+      showResult(winner);
+      addHistory(winner);
+      spinning = false;
+      spinBtn.textContent = 'SPIN AGAIN';
+      spinBtn.style.background = '#38bdf8';
+      spinBtn.style.color = '#0f172a';
+      spinBtn.style.cursor = 'pointer';
+    }
+  }
+
+  animId = requestAnimationFrame(animate);
+}
+
+spinBtn.style.background = '#38bdf8';
+spinBtn.style.color = '#0f172a';
+spinBtn.addEventListener('click', doSpin);
+canvas.addEventListener('click', doSpin);
+
+function showResult(winner) {
+  resultBox.style.display = 'inline-block';
+  resultBox.style.background = winner.color + '22';
+  resultBox.style.border = '2px solid ' + winner.color;
+  resultBox.innerHTML =
+    '<div style="font-size:13px;color:#94a3b8;margin-bottom:4px">The wheel says…</div>' +
+    '<div style="font-size:44px;font-weight:900;color:' + winner.color + ';letter-spacing:2px">' + winner.text + '</div>';
+}
+
+function addHistory(winner) {
+  history.unshift(winner);
+  if (history.length > 20) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  if (history.length === 0) { histCard.style.display = 'none'; return; }
+  histCard.style.display = 'block';
+
+  var yes = history.filter(function(h) { return h.text === 'YES'; }).length;
+  var no  = history.filter(function(h) { return h.text === 'NO';  }).length;
+  var maybe = history.filter(function(h) { return h.text === 'MAYBE'; }).length;
+  var parts = ['Yes: ' + yes, 'No: ' + no];
+  if (maybe > 0) parts.push('Maybe: ' + maybe);
+  statsEl.textContent = parts.join(' / ');
+
+  chipsEl.innerHTML = '';
+  history.forEach(function(h) {
+    var chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = h.text;
+    chip.style.background = h.color + '22';
+    chip.style.color = h.color;
+    chip.style.border = '1px solid ' + h.color;
+    chipsEl.appendChild(chip);
   });
-  ctx.beginPath(); ctx.arc(cx,cy,18,0,2*Math.PI);
-  ctx.fillStyle='#1e293b'; ctx.fill();
-  ctx.strokeStyle='#475569'; ctx.lineWidth=2; ctx.stroke();
 }
-
-export default function YesOrNo() {
-  const [presetIdx, setPresetIdx] = useState(0);
-  const [options, setOptions] = useState(PRESETS[0].options);
-  const [rotation, setRotation] = useState(0);
-  const [spinning, setSpinning] = useState(false);
-  const [result, setResult] = useState(null);
-  const [history, setHistory] = useState([]);
-  const canvasRef = useRef(null);
-  const animRef = useRef(null);
-
-  useEffect(() => {
-    if (canvasRef.current) drawWheel(canvasRef.current, options, rotation);
-  }, [options, rotation]);
-
-  const spin = () => {
-    if (spinning) return;
-    setResult(null);
-    const extra = 6 + Math.random() * 6;
-    const extraAngle = Math.random() * 2 * Math.PI;
-    const total = extra * 2 * Math.PI + extraAngle;
-    const duration = 2800 + Math.random() * 800;
-    const start = performance.now();
-    const startRot = rotation;
-    setSpinning(true);
-    const animate = (now) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 4);
-      const cur = startRot + total * ease;
-      setRotation(cur);
-      if (progress < 1) {
-        animRef.current = requestAnimationFrame(animate);
-      } else {
-        const n = options.length;
-        const slice = (2 * Math.PI) / n;
-        const norm = ((-(cur % (2*Math.PI))) + 2*Math.PI) % (2*Math.PI);
-        const idx = Math.floor(norm / slice) % n;
-        const r = options[idx];
-        setResult(r);
-        setHistory(h => [r, ...h.slice(0,9)]);
-        setSpinning(false);
-      }
-    };
-    animRef.current = requestAnimationFrame(animate);
-  };
-
-  const applyPreset = (i) => { setPresetIdx(i); setOptions(PRESETS[i].options); setResult(null); };
-
-  return (
-    <div style={{maxWidth:560,margin:'40px auto',padding:'0 20px'}}>
-      <h1 style={{textAlign:'center',fontSize:28,fontWeight:700,marginBottom:8}}>Yes or No Wheel</h1>
-      <p style={{textAlign:'center',color:'#94a3b8',marginBottom:24}}>Can't decide? Let the wheel choose for you.</p>
-
-      <div style={{display:'flex',gap:8,justifyContent:'center',marginBottom:24,flexWrap:'wrap'}}>
-        {PRESETS.map((p,i) => (
-          <button key={i} onClick={()=>applyPreset(i)} style={{background:presetIdx===i?'#38bdf8':'#1e293b',color:presetIdx===i?'#0f172a':'#94a3b8',border:`1px solid ${presetIdx===i?'#38bdf8':'#334155'}`,borderRadius:10,padding:'8px 16px',fontSize:13,fontWeight:600,cursor:'pointer'}}>{p.label}</button>
-        ))}
-      </div>
-
-      <div style={{background:'#1e293b',borderRadius:20,padding:'32px 24px',textAlign:'center',border:'1px solid #334155',marginBottom:20}}>
-        <div style={{position:'relative',display:'inline-block',marginBottom:24}}>
-          <canvas ref={canvasRef} width={300} height={300} style={{borderRadius:'50%',display:'block',cursor:'pointer'}} onClick={spin}/>
-          {/* Right-pointing pointer */}
-          <div style={{position:'absolute',top:'50%',right:-16,transform:'translateY(-50%)',width:0,height:0,borderTop:'16px solid transparent',borderBottom:'16px solid transparent',borderRight:'32px solid #f1f5f9'}}/>
-        </div>
-
-        {result && !spinning && (
-          <div style={{background: result.color + '22', border:`2px solid ${result.color}`, borderRadius:14,padding:'16px 32px',marginBottom:16,display:'inline-block'}}>
-            <div style={{fontSize:13,color:'#94a3b8',marginBottom:4}}>The wheel says…</div>
-            <div style={{fontSize:44,fontWeight:900,color:result.color,letterSpacing:2}}>{result.text}</div>
-          </div>
-        )}
-
-        <div style={{display:'block'}}>
-          <button onClick={spin} disabled={spinning}
-            style={{background:spinning?'#334155':'#38bdf8',color:spinning?'#64748b':'#0f172a',border:'none',borderRadius:12,padding:'14px 48px',fontSize:18,fontWeight:700,cursor:spinning?'not-allowed':'pointer'}}>
-            {spinning ? 'Spinning…' : 'SPIN'}
-          </button>
-        </div>
-      </div>
-
-      {history.length > 0 && (
-        <div style={{background:'#1e293b',borderRadius:16,padding:16,border:'1px solid #334155'}}>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-            <h2 style={{fontSize:15,fontWeight:600}}>History</h2>
-            <div style={{fontSize:13,color:'#64748b'}}>
-              Yes: {history.filter(h=>h.text==='YES').length} / No: {history.filter(h=>h.text==='NO').length}
-              {history.some(h=>h.text==='MAYBE') ? ` / Maybe: ${history.filter(h=>h.text==='MAYBE').length}` : ''}
-            </div>
-          </div>
-          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-            {history.map((h,i) => (
-              <span key={i} style={{background:h.color+'22',color:h.color,border:`1px solid ${h.color}`,borderRadius:8,padding:'5px 14px',fontSize:14,fontWeight:700}}>{h.text}</span>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<YesOrNo />);
-//]]>
 </script>
 </body>
 </html>
