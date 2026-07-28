@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yes-or-no.tabutility.com/sitemap.xml
